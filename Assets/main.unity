@@ -118,7 +118,8 @@ MonoBehaviour:
   floorPrefab: {fileID: 112054, guid: 90840143efec44981b7a02ca89049b92, type: 2}
   playerPrefab: {fileID: 118118, guid: 2020cdf673c274e2899a65b3ccf9e142, type: 2}
   ratPrefab: {fileID: 194764, guid: 9d88aa48d1df24ef7bbf64f8ac129c32, type: 2}
-  Hand: {fileID: 1531403295}
+  hand: {fileID: 1531403295}
+  Preview: {fileID: 0}
   player: {fileID: 0}
   myTiles: []
 --- !u!4 &1170665614
@@ -141,6 +142,7 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 1531403296}
+  - 114: {fileID: 1531403297}
   m_Layer: 0
   m_Name: Hand
   m_TagString: Untagged
@@ -160,6 +162,20 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
+--- !u!114 &1531403297
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1531403295}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5caf7c801c9d44b9e9609658f5789dc8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cardPrefab: {fileID: 185892, guid: 4c94987d0b5e84399842a9d2a8dc588c, type: 2}
+  level: {fileID: 1170665612}
+  cardsInHand: []
 --- !u!1 &1661445336
 GameObject:
   m_ObjectHideFlags: 0

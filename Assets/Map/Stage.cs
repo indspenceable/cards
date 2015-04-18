@@ -9,7 +9,7 @@ public class Stage : MonoBehaviour {
 	public GameObject playerPrefab;
 	public GameObject ratPrefab;
 
-	public GameObject Hand;
+	public GameObject hand;
 	public GameObject Preview;
 
 	public Unit player;
@@ -23,6 +23,7 @@ public class Stage : MonoBehaviour {
 		this.ConstructRandomTileMap();
 		this.PlacePlayer();
 		this.PlaceSomeRats();
+		hand.GetComponent<Deck>().SetUp();
 	}
 
 	void PlacePlayer() {
@@ -31,8 +32,7 @@ public class Stage : MonoBehaviour {
 		Tile t = findTile (x, y);
 
 		player = ((GameObject)Instantiate(playerPrefab, t.transform.position, Quaternion.identity)).GetComponent<Unit>();
-		t.unit = player;
-		player.transform.Translate(0,0,-1);
+		player.MoveTo(t);
 	}
 
 	void PlaceSomeRats() {
@@ -48,8 +48,7 @@ public class Stage : MonoBehaviour {
 			Tile t = findTile (x, y);
 			if (t.unit == null) {
 				Unit rat = ((GameObject)Instantiate(ratPrefab, t.transform.position, Quaternion.identity)).GetComponent<Unit>();
-				t.unit = rat;
-				rat.transform.Translate(0,0,-1);
+				rat.MoveTo(t);
 				return;
 			}
 		}

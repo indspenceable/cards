@@ -7,6 +7,8 @@ public class Tile : MonoBehaviour {
 	public Stage stage;
 	public Unit unit;
 
+	private bool selected;
+
 	private Camera camera;
 	private Collider2D collider;
 
@@ -17,10 +19,17 @@ public class Tile : MonoBehaviour {
 	}
 
 	void OnDrawGizmos() {
-		Vector2 v = camera.ViewportToWorldPoint(camera.ScreenToViewportPoint(Input.mousePosition));
-		if (this.collider.OverlapPoint(v)) {
-			Gizmos.DrawWireSphere( v, 1f );
+		if (selected) {
+			Gizmos.DrawWireSphere(transform.position, 0.5f);
 		}
+	}
+
+	public void Select() {
+		selected = true;
+	}
+
+	public void Unselect() {
+		selected = false;
 	}
 
 	// Update is called once per frame
