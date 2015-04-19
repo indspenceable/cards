@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 using UnityEditor;
+using System.Linq;
 
 public class Stage : MonoBehaviour {
 	// Prefabs
@@ -18,12 +19,36 @@ public class Stage : MonoBehaviour {
 	public const int WIDTH = 10;
 	public const int HEIGHT = 10;
 
+
 	// Use this for initialization
 	void Awake () {
 		this.ConstructRandomTileMap();
 		this.PlacePlayer();
 		this.PlaceSomeRats();
 		hand.GetComponent<Deck>().SetUp();
+	}
+
+	public List<Tile> path(Unit u, int distance) {
+		HashSet<Tile> availableTiles = new HashSet<Tile>();
+	    List<Tile> tilesToCheck = new List<Tile>();
+		availableTiles.Add(u.tile);
+		tilesToCheck.Add(u.tile);
+
+		while (tilesToCheck.Count > 0) {
+			Tile t = tilesToCheck[0];
+			tilesToCheck.RemoveAt(0);
+
+			Tile a = findTile(t.x-1, t.y);
+			Tile b = findTile(t.x+1, t.y);
+			Tile c = findTile(t.x, t.y-1);
+			Tile d = findTile(t.x, t.y+1);
+
+			if (a != null && a.passable) {
+
+			}
+		}
+
+		return availableTiles.ToList();
 	}
 
 	void PlacePlayer() {
@@ -78,15 +103,22 @@ public class Stage : MonoBehaviour {
 		GameObject tilePrefab;
 		if (x == 0 || y == 0 || x == 9 || y == 9 || Random.Range(0,10) < 1) {
 			tilePrefab = wallPrefab;
+			Tile tile = ((GameObject)Instantiate(tilePrefab, new Vector3(x-4.5f, y-4.5f), Quaternion.identity)).GetComponent<Tile>();
+			tile.x = x;
+			tile.y = y;
+			tile.passable = false;
+			tile.stage = this;
+			
+			return tile;
 		} else {
 			tilePrefab = floorPrefab;
+			Tile tile = ((GameObject)Instantiate(tilePrefab, new Vector3(x-4.5f, y-4.5f), Quaternion.identity)).GetComponent<Tile>();
+			tile.x = x;
+			tile.y = y;
+			tile.passable = true;
+			tile.stage = this;
+			
+			return tile;
 		}
-
-		Tile tile = ((GameObject)Instantiate(tilePrefab, new Vector3(x-4.5f, y-4.5f), Quaternion.identity)).GetComponent<Tile>();
-		tile.x = x;
-		tile.y = y;
-		tile.stage = this;
-
-		return tile;
 	}
 }

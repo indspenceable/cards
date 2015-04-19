@@ -26,7 +26,7 @@ public class DragToUseCard : MonoBehaviour {
 		startingMousePosition = camera.ViewportToWorldPoint(camera.ScreenToViewportPoint(Input.mousePosition));
 
 		// Find valid tiles to drag onto
-		targetableTiles = myCard.findTargetableTiles(level.myTiles, myUnit);
+		targetableTiles = myCard.findTargetableTiles(level, myUnit);
 		foreach (Tile t in targetableTiles) {
 			t.Select();
 		}

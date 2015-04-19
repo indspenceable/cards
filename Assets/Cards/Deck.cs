@@ -3,13 +3,30 @@ using System.Collections.Generic;
 using System.Collections;
 
 public abstract class CardData {
-	public abstract List<Tile> findTargetableTiles(List<Tile> allTiles, Unit user);
+	public abstract List<Tile> findTargetableTiles(Stage level, Unit user);
 	public abstract void execute(Tile t, Unit user);
 }
 
 public class MagicTeleport : CardData {
-	public override List<Tile> findTargetableTiles(List<Tile> allTiles, Unit user) {
-		return allTiles;
+	public override List<Tile> findTargetableTiles(Stage level, Unit user) {
+		return level.myTiles;
+	}
+	public override void execute(Tile t, Unit user) {
+		user.MoveTo(t);
+	}
+}
+
+public class Movement : CardData {
+	public int distance;
+	public Movement(int distance) {
+		this.distance = distance;
+	}
+	public override List<Tile> findTargetableTiles(Stage level, Unit user) {
+		// make a copy!
+		List<Tile> dupTiles = level.myTiles.GetRange(0, level.myTiles.Count);
+
+		dupTiles.RemoveAll(tile => Mathf.Abs(tile.x - user.tile.x) + Mathf.Abs(tile.y - user.tile.y) > distance);
+		return dupTiles;
 	}
 	public override void execute(Tile t, Unit user) {
 		user.MoveTo(t);
@@ -36,7 +53,7 @@ public class Deck : MonoBehaviour {
 
 	public void SetUp() {
 		for(int i = 0; i < 10; i+=1) {
-			cardsInDeck.Add(new MagicTeleport());
+			cardsInDeck.Add(new Movement(3));
 		}
 		Shuffle();
 		DrawHand();
