@@ -6,6 +6,7 @@ public class Tile : MonoBehaviour {
 	public int y;
 	public Stage stage;
 	public Unit unit;
+	public int cost = 1;
 
 	private bool selected;
 

@@ -8,6 +8,8 @@ public abstract class CardData {
 }
 
 public class MagicTeleport : CardData {
+	// Please don't actually use the list of tiles from the stage...
+
 	public override List<Tile> findTargetableTiles(Stage level, Unit user) {
 		return level.myTiles;
 	}
@@ -22,11 +24,7 @@ public class Movement : CardData {
 		this.distance = distance;
 	}
 	public override List<Tile> findTargetableTiles(Stage level, Unit user) {
-		// make a copy!
-		List<Tile> dupTiles = level.myTiles.GetRange(0, level.myTiles.Count);
-
-		dupTiles.RemoveAll(tile => Mathf.Abs(tile.x - user.tile.x) + Mathf.Abs(tile.y - user.tile.y) > distance);
-		return dupTiles;
+		return level.path(user, 3);
 	}
 	public override void execute(Tile t, Unit user) {
 		user.MoveTo(t);

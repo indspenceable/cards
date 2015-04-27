@@ -29,26 +29,40 @@ public class Stage : MonoBehaviour {
 	}
 
 	public List<Tile> path(Unit u, int distance) {
-		HashSet<Tile> availableTiles = new HashSet<Tile>();
-	    List<Tile> tilesToCheck = new List<Tile>();
-		availableTiles.Add(u.tile);
-		tilesToCheck.Add(u.tile);
+		Dictionary<Tile, int> knownDistances = new Dictionary<Tile, int>();
+	    List<Tile> openList = new List<Tile>();
+		knownDistances.Add(u.tile, 0);
+		openList.Add(u.tile);
 
-		while (tilesToCheck.Count > 0) {
-			Tile t = tilesToCheck[0];
-			tilesToCheck.RemoveAt(0);
+		while (openList.Count > 0) {
+			Tile currentTile = openList[0];
+			openList.RemoveAt(0);
+			int currentTileDistance = knownDistances[currentTile];
 
-			Tile a = findTile(t.x-1, t.y);
-			Tile b = findTile(t.x+1, t.y);
-			Tile c = findTile(t.x, t.y-1);
-			Tile d = findTile(t.x, t.y+1);
+			Tile[] tiles = {
+				findTile(currentTile.x-1, currentTile.y),
+				findTile(currentTile.x+1, currentTile.y),
+				findTile(currentTile.x, currentTile.y-1),
+				findTile(currentTile.x, currentTile.y+1),
+			};
 
-			if (a != null && a.passable) {
-
+			foreach (Tile adjacent in tiles) {
+				if (canPassTile(u, adjacent) && currentTileDistance + adjacent.cost <= distance) {
+					if (! knownDistances.ContainsKey(adjacent)) {
+						knownDistances.Add (adjacent, currentTileDistance+1);
+						openList.Add (adjacent);
+					}
+				}
 			}
 		}
 
-		return availableTiles.ToList();
+		return knownDistances.Keys.ToList();
+	}
+
+	bool canPassTile(Unit u, Tile t) {
+		return (t != null &&
+		        t.passable &&
+		        (t.unit == null || t.unit == u));
 	}
 
 	void PlacePlayer() {
