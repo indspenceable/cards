@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
+using System.Linq;
 
 public abstract class CardData {
 	public abstract List<Tile> findTargetableTiles(Stage level, Unit user);
@@ -8,10 +9,8 @@ public abstract class CardData {
 }
 
 public class MagicTeleport : CardData {
-	// Please don't actually use the list of tiles from the stage...
-
 	public override List<Tile> findTargetableTiles(Stage level, Unit user) {
-		return level.myTiles;
+		return level.myTiles.GetRange(0, level.myTiles.Count);
 	}
 	public override void execute(Tile t, Unit user) {
 		user.MoveTo(t);
@@ -28,6 +27,19 @@ public class Movement : CardData {
 	}
 	public override void execute(Tile t, Unit user) {
 		user.MoveTo(t);
+	}
+}
+
+public class MeleeAttack : CardData {
+	public int strength;
+	public MeleeAttack(int strength) {
+		this.strength = strength;
+	}
+	public override List<Tile> findTargetableTiles(Stage level, Unit user) {
+		return level.myTiles.FindAll (t => t.AdjacentTo (user.tile) && t.unit && t.unit != user);
+	}
+	public override void execute(Tile t, Unit user) {
+		// Deal damage! WAT.
 	}
 }
 
@@ -50,10 +62,15 @@ public class Deck : MonoBehaviour {
 	}
 
 	public void SetUp() {
-		for(int i = 0; i < 10; i+=1) {
-			cardsInDeck.Add(new Movement(3));
-		}
-		Shuffle();
+//		for(int i = 0; i < 10; i+=1) {
+//			cardsInDeck.Add(new Movement(3));
+//		}
+//		Shuffle();
+		cardsInDeck.Add(new Movement(3));
+		cardsInDeck.Add(new Movement(3));
+		cardsInDeck.Add(new Movement(3));
+		cardsInDeck.Add(new MeleeAttack(3));
+		cardsInDeck.Add(new MeleeAttack(3));
 		DrawHand();
 	}
 	/*
