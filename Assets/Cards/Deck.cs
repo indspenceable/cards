@@ -4,10 +4,12 @@ using System.Collections;
 using System.Linq;
 
 public abstract class CardData {
+	public abstract string pictureKey();
 	public abstract List<Tile> findTargetableTiles(Stage level, Unit user);
 	public abstract void execute(Tile t, Unit user);
 }
 
+/*
 public class MagicTeleport : CardData {
 	public override List<Tile> findTargetableTiles(Stage level, Unit user) {
 		return level.myTiles.GetRange(0, level.myTiles.Count);
@@ -16,11 +18,15 @@ public class MagicTeleport : CardData {
 		user.MoveTo(t);
 	}
 }
+*/
 
 public class Movement : CardData {
 	public int distance;
 	public Movement(int distance) {
 		this.distance = distance;
+	}
+	public override string pictureKey() {
+		return "movement";
 	}
 	public override List<Tile> findTargetableTiles(Stage level, Unit user) {
 		return level.path(user, 3);
@@ -35,17 +41,28 @@ public class MeleeAttack : CardData {
 	public MeleeAttack(int strength) {
 		this.strength = strength;
 	}
+	public override string pictureKey() {
+		return "melee_attack";
+	}
 	public override List<Tile> findTargetableTiles(Stage level, Unit user) {
 		return level.myTiles.FindAll (t => t.AdjacentTo (user.tile) && t.unit && t.unit != user);
 	}
 	public override void execute(Tile t, Unit user) {
-		// Deal damage! WAT.
+		t.unit.TakeHit(strength);
 	}
+}
+
+[System.Serializable]
+public struct NamedImage {
+	public string name;
+	public Sprite image;
 }
 
 public class Deck : MonoBehaviour {
 	public GameObject cardPrefab;
 	public GameObject level;
+	public NamedImage[] pictures;
+
 
 	[HideInInspector]
 	public List<CardData> cardsInDeck = new List<CardData>();
@@ -97,6 +114,15 @@ public class Deck : MonoBehaviour {
 		}
 	}
 
+	private Sprite findCardSpriteByName(string name) {
+		foreach (NamedImage n in pictures) {
+			if (n.name.Equals(name)) {
+				return n.image;
+			}
+		}
+		return null;
+	}
+
 	public void DrawHand() {
 		List<CardData> handOfCards = new List<CardData>();
 
@@ -104,12 +130,13 @@ public class Deck : MonoBehaviour {
 		cardsInDeck.RemoveRange(0, 5);
 		int y = 0;
 		foreach(CardData cardData in handOfCards) {
-			DragToUseCard card = (Instantiate(cardPrefab, new Vector3(0, y*-1, -2) + transform.position, Quaternion.identity) as GameObject).GetComponent<DragToUseCard>();
-			card.myCard = cardData;
-			card.myUnit = level.GetComponent<Stage>().player;
-			card.level = level.GetComponent<Stage>();
-			card.hand = this;
-			cardsInHand.Add(card);
+			DragToUseCard cardScript = (Instantiate(cardPrefab, new Vector3(0, y*-1, -2) + transform.position, Quaternion.identity) as GameObject).GetComponent<DragToUseCard>();
+			cardScript.myCard = cardData;
+			cardScript.myUnit = level.GetComponent<Stage>().player;
+			cardScript.level = level.GetComponent<Stage>();
+			cardScript.hand = this;
+			cardScript.GetComponent<SpriteRenderer>().sprite = findCardSpriteByName(cardData.pictureKey());
+			cardsInHand.Add(cardScript);
 			y+=1;
 		}
 	}
@@ -121,9 +148,9 @@ public class Deck : MonoBehaviour {
 
 	public void RepositionAllCards() {
 		int y = 0;
-		foreach(DragToUseCard card in cardsInHand) {
+		foreach(DragToUseCard cardScript in cardsInHand) {
 			Vector3 dest = new Vector3(0, y*-1, -2) + transform.position;
-			StartCoroutine(RepositionCard(0.1f, card, dest));
+			StartCoroutine(RepositionCard(0.1f, cardScript, dest));
 			y+=1;
 		}
 	}

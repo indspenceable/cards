@@ -175,6 +175,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardPrefab: {fileID: 185892, guid: 4c94987d0b5e84399842a9d2a8dc588c, type: 2}
   level: {fileID: 1170665612}
+  pictures:
+  - name: movement
+    image: {fileID: 21300000, guid: 4b6e461d8d588437f89ce1739ba5360f, type: 3}
+  - name: melee_attack
+    image: {fileID: 21300000, guid: 427e08ba467fb4102902f65329ddc517, type: 3}
   cardsInHand: []
 --- !u!1 &1661445336
 GameObject:

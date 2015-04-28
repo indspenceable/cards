@@ -59,9 +59,8 @@ MonoBehaviour:
   stage: {fileID: 0}
   unit: {fileID: 0}
   cost: 1
-  originalColor: {r: 1, g: 1, b: 1, a: 0}
-  selectedColor: {r: 1, g: 0, b: 0, a: .576470613}
   passable: 1
+  selectorPrefab: {fileID: 129704, guid: 88d232846b5644a1c8b1d6d3909ba8f5, type: 2}
 --- !u!212 &21210300
 SpriteRenderer:
   m_ObjectHideFlags: 1

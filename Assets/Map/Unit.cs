@@ -3,6 +3,7 @@ using System.Collections;
 
 public class Unit : MonoBehaviour {
 	public Tile tile;
+	public int hp;
 
 	// Use this for initialization
 	void Start () {
@@ -23,5 +24,13 @@ public class Unit : MonoBehaviour {
 
 		transform.position = t.transform.position;
 		transform.Translate(0,0,-1);
+	}
+
+	public void TakeHit(int damage) {
+		hp -= damage;
+		if (hp <= 0) {
+			tile.unit = null;
+			Object.Destroy(gameObject);
+		}
 	}
 }

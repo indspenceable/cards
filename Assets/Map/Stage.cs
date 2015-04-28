@@ -71,6 +71,7 @@ public class Stage : MonoBehaviour {
 		Tile t = findTile (x, y);
 
 		player = ((GameObject)Instantiate(playerPrefab, t.transform.position, Quaternion.identity)).GetComponent<Unit>();
+		player.hp = 1;
 		player.MoveTo(t);
 	}
 
@@ -87,6 +88,7 @@ public class Stage : MonoBehaviour {
 			Tile t = findTile (x, y);
 			if (t.unit == null) {
 				Unit rat = ((GameObject)Instantiate(ratPrefab, t.transform.position, Quaternion.identity)).GetComponent<Unit>();
+				rat.hp = 1;
 				rat.MoveTo(t);
 				return;
 			}
